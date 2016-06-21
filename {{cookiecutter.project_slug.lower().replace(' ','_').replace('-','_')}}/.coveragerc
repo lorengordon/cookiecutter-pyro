@@ -1,0 +1,27 @@
+{%- set project_slug = cookiecutter.project_slug|lower|replace(' ','_')|replace('-','_') -%}
+[paths]
+{%- if cookiecutter.test_matrix_separate_coverage|lower == 'yes' or cookiecutter.test_matrix_configurator|lower == 'yes' %}
+source = src
+{%- else %}
+source =
+   src/{{ project_slug }}
+   */site-packages/{{ project_slug }}
+{%- endif %}
+
+[run]
+branch = True
+{%- if cookiecutter.test_matrix_separate_coverage|lower == 'yes' or cookiecutter.test_matrix_configurator|lower == 'yes' %}
+source =
+    src
+    tests
+{%- else %}
+source =
+    {{ project_slug }}
+    tests
+{%- endif %}
+parallel = true
+
+[report]
+show_missing = true
+precision = 2
+omit = *migrations*
