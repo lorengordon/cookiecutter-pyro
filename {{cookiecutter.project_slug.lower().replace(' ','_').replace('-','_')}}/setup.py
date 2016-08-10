@@ -91,9 +91,10 @@ try:
         'rst',
         format='md')
     long_description = long_description.replace('\r\n', '\n')
-except (ImportError):
+except (ImportError, OSError):
     # pandoc is not installed, fallback to using raw contents
-    print("Pandoc not found. Long_description conversion failure.")
+    print("WARNING: Pandoc not found. Long_description conversion failure. "
+          "Do not upload this package to pypi.")
     with io.open('README.md', encoding="utf-8") as f:
         long_description = f.read()
 
