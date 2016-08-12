@@ -167,7 +167,7 @@ setup(
         #   'rst': ['docutils>=0.11'],
         #   ':python_version=="2.6"': ['argparse'],
     },
-{%- if cookiecutter.command_line_interface|lower in ['plain', 'click'] %}
+{%- if cookiecutter.command_line_interface|lower != 'no' %}
     entry_points={
         'console_scripts': [
             '{{ project_slug }} = {{ project_slug }}.cli:main',
