@@ -79,6 +79,21 @@ def read(*names, **kwargs):
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
 
+
+def find_version(*file_paths):
+    # Read the version number from a source file.
+    # Why read it, and not import?
+    # see https://groups.google.com/d/topic/pypa-dev/0PkjVpcxTzQ/discussion
+    version_file = read(*file_paths, encoding='latin1')
+
+    # The version line must have the form
+    # __version__ = 'ver'
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
+
 try:
     import pypandoc
     # Strip Markdown image tags from README.md and convert to rst
@@ -112,7 +127,7 @@ setup_requires.extend(['cython'] if Cython else [])
 
 setup(
     name='{{ project_slug }}',
-    version='{{ cookiecutter.version }}',
+    version=find_version('src', '{{ cookiecutter.project_slug }}', '__init__.py'),
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
