@@ -44,18 +44,31 @@ notifications:
     on_failure: always
 {%- if cookiecutter.pypi_deploy_with_travis == 'yes' %}
 # After you create the Github repo and add it to Travis, run the
-# ci/travis_pypi_setup.py script to finish PyPI deployment setup
+# ci/travis_pypi_setup.py script and set the secure passwords to
+# finish PyPI deployment setup
 before_deploy:
   - pip install pypandoc>=1.2.0
   - python -c "import pypandoc; pypandoc.pandoc_download.download_pandoc()"
+  - python $TRAVIS_BUILD_DIR/ci/travis_set_build.py --skip "$TRAVIS_TAG"
 deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  user: {{ cookiecutter.pypi_username }}
-  password:
-    secure: PLEASE_REPLACE_ME
-  on:
-    tags: true
-    repo: {{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
-    condition: '"$TOXENV" == *"py"*'
+  - provider: pypi
+    server: https://testpypi.python.org/pypi
+    distributions: sdist bdist_wheel
+    user: {{ cookiecutter.pypi_username }}
+    password:
+      secure: PLEASE_REPLACE_ME
+    skip_cleanup: true
+    on:
+      tags: false
+      repo: {{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
+      condition: '"$TOXENV" == *"py27"*'
+  - provider: pypi
+    distributions: sdist bdist_wheel
+    user: {{ cookiecutter.pypi_username }}
+    password:
+      secure: PLEASE_REPLACE_ME
+    on:
+      tags: true
+      repo: {{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
+      condition: '"$TOXENV" == *"py27"*'
 {%- endif %}
