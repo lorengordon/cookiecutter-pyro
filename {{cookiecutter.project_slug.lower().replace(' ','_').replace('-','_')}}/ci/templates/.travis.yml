@@ -81,6 +81,7 @@ deploy:
       secure: PLEASE_REPLACE_ME
     skip_cleanup: true
     on:
+      branch: master
       tags: false
       repo: {{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
       condition: '"$TOXENV" == *"py27"*'
